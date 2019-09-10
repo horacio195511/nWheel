@@ -48,59 +48,70 @@ int button(int i) {
 void setup() {
   Serial.begin(9600);
   myDisplay.begin(16, 2);
-  myDisplay.print(modeList.length());
+  myDisplay.print("mode List   V");
   stringStart = 0;
-  stringEnd = stringStart + 15;
+  stringEnd = stringStart + 16;
 }
 void loop() {
-  int but = button(analogRead(buttonIn)) ;
-  while (but == RIGHT) {
-    if (stringStart >= 0 || (stringEnd - 16) >= 0 ) {
+  while (button(analogRead(buttonIn)) == RIGHT) {
+    /***********************************************************************************/
+    //Case the string not break limit
+    if (stringEnd <= modeList.length() && stringStart > 0) {
       myDisplay.setCursor(0, 1);
       myDisplay.print(modeList.substring(stringStart, stringEnd));
-      stringStart--;
-      stringEnd--;
     }
-    /*Case the stringEnd &StringStart over boundary*/
-    if (stringEnd < 0) stringEnd = modeList.length();
-    if (stringStart < 0) stringStart = modeList.length();
 
-    if (stringStart < 0 || (stringEnd - 16) < 0 ) {
-      myDisplay.setCursor(0, 1);
-      myDisplay.print(modeList.substring(stringStart, modeList.length()) + modeList.substring(0, stringEnd));
-      stringStart--;
-      stringEnd--;
+    /*Case the stringEnd & StringStart over boundary*/
+    if (stringEnd > modeList.length()) {
+      stringEnd = modeList.length();
+      stringStart = stringEnd - 16;
     }
-    myDisplay.setCursor(3, 0);
-    myDisplay.print(stringStart);
-    myDisplay.setCursor(6, 0);
-    myDisplay.print(stringEnd);
-    delay(250);
+    /***************************************************************************************/
+
+    /*Case the stringEnd & StringStart over boundary*/
+    if (stringStart <= 0) {
+      stringStart = 0;
+      stringEnd = stringStart + 16;
+      myDisplay.setCursor(0, 1);
+      myDisplay.print(modeList.substring(stringStart, stringEnd));
+    }
+
+    /******************************************************************************************/
+
+    //Decrement two parameter
+    stringEnd--;
+    stringStart--;
+    delay(150);
   }
 
 
-  while (but == LEFT ) {
-    if (stringEnd <= modeList.length() || ((stringStart + 16) <= modeList.length())) {
+  while (button(analogRead(buttonIn)) == LEFT ) {
+    /*************************************************************************************************/
+    //Case the string not break limit
+    if (stringEnd <= modeList.length() && stringStart > 0) {
       myDisplay.setCursor(0, 1);
       myDisplay.print(modeList.substring(stringStart, stringEnd));
-      stringStart++;
-      stringEnd++;
     }
 
     /*Case the stringEnd &StringStart over boundary*/
-    if (stringStart > modeList.length()) stringStart = 0;
-    if (stringEnd > modeList.length())  stringEnd = 0;
-
-    if ((stringEnd > modeList.length()) || ((stringStart + 16) > modeList.length())) {
-      myDisplay.setCursor(0, 1);
-      myDisplay.print( modeList.substring(stringStart, modeList.length()) + modeList.substring(0, stringEnd) );
-      stringStart++;
-      stringEnd++;
+    if (stringEnd > modeList.length()) {
+      stringEnd = modeList.length();
+      stringStart = stringEnd - 16;
     }
-    myDisplay.setCursor(3, 0);
-    myDisplay.print(stringStart);
-    myDisplay.setCursor(6, 0);
-    myDisplay.print(stringEnd);
-    delay(250);
+    /**********************************************************************************************************/
+
+    /*Case the stringEnd &StringStart over boundary*/
+    if (stringStart <= 0) {
+      stringStart = 0;
+      stringEnd = stringStart + 16;
+      myDisplay.setCursor(0, 1);
+      myDisplay.print(modeList.substring(stringStart, stringEnd));
+    }
+
+    /***********************************************************************************************************/
+    //Increment two parameter
+    stringStart++;
+    stringEnd++;
+    delay(150);
   }
 }
